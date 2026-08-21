@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#VERSION: 1.0
+#VERSION: 1.1
 #AUTHORS: Maxime (custom plugin)
 
 # YTS.gg search plugin for qBittorrent
@@ -65,9 +65,19 @@ class ytsgg(object):
         }
         return int(size * multipliers.get(size_unit, 1))
 
+    # Special keywords for browsing
+    SPECIAL_KEYWORDS = {
+        'latest': {'sort_by': 'date_added', 'query': ''},
+        'top': {'sort_by': 'download_count', 'query': ''},
+    }
+
     def search(self, what, cat='all'):
         """
         Search YTS for movies.
+
+        Special keywords:
+            'latest' - browse recently added movies
+            'top'    - browse most downloaded movies
 
         Parameters:
             what: search query (already URL-encoded with + for spaces)
@@ -77,19 +87,29 @@ class ytsgg(object):
         limit = 50  # max allowed by API
         max_pages = 5  # safety limit (250 results max)
 
+        # Check for special keywords
+        keyword = what.lower().strip()
+        if keyword in self.SPECIAL_KEYWORDS:
+            sort_by = self.SPECIAL_KEYWORDS[keyword]['sort_by']
+            query = self.SPECIAL_KEYWORDS[keyword]['query']
+        else:
+            sort_by = 'seeds'
+            query = what
+
         while page <= max_pages:
             api_url = (
                 "{base}/api/v2/list_movies.json"
                 "?query_term={query}"
                 "&limit={limit}"
                 "&page={page}"
-                "&sort_by=seeds"
+                "&sort_by={sort_by}"
                 "&order_by=desc"
             ).format(
                 base=self.url,
-                query=what,
+                query=query,
                 limit=limit,
-                page=page
+                page=page,
+                sort_by=sort_by
             )
 
             try:
