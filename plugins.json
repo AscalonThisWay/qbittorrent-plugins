@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Nyaa.si",
+    "version": "2.0",
+    "url": "https://raw.githubusercontent.com/AscalonThisWay/qbittorrent-plugins/main/nyaasi.py"
+  },
+  {
+    "name": "YTS.gg",
+    "version": "1.1",
+    "url": "https://raw.githubusercontent.com/AscalonThisWay/qbittorrent-plugins/main/ytsgg.py"
+  }
+]
